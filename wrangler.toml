@@ -1,0 +1,24 @@
+# ============================================================
+# Edge Drop — Cloudflare Workers 配置
+#
+# 部署步骤：
+#   1. npx wrangler login                      登录 Cloudflare 账号
+#   2. npx wrangler kv namespace create DROP   创建 KV，把输出的 id 填到下面
+#   3. npx wrangler secret put DROP_PASSWORD   设置访问密码
+#   4. npx wrangler deploy                     部署上线
+# ============================================================
+
+name = "edge-drop"
+main = "src/worker.js"
+compatibility_date = "2026-01-01"
+
+# 静态前端资源（public/ 目录）
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# KV 命名空间：note:* 存笔记文本，file:* 存文件二进制 + 元数据，
+# share:* 存临时分享记录（指向 note/file，自带 TTL），rl:login:* 存登录限流计数
+[[kv_namespaces]]
+binding = "DROP"
+id = "05a8f9bb9eee4604b1d3601246f4f731"

@@ -1,0 +1,14 @@
+{
+  "name": "edge-drop",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "类似 Edge Drop 的跨设备文件/笔记中转站，基于 Cloudflare Workers + KV",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

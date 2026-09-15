@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="paper">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Drop. · 跨设备中转站</title>
+    <!-- 首屏前应用主题，避免闪烁（同步加载） -->
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23f5f3ee'/><text x='46' y='72' font-family='Georgia,serif' font-size='62' text-anchor='middle' fill='%231d1a15'>D</text><circle cx='74' cy='68' r='8' fill='%23d24a1e'/></svg>" />
+  </head>
+  <body>
+    <!-- 极光主题背景光斑（仅 aurora 主题显示） -->
+    <div class="aurora-bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+
+    <!-- 登录页 -->
+    <div id="login-view" class="login-wrap" hidden>
+      <form id="login-form" class="login-card">
+        <h1 class="login-title">Drop<span class="dot">.</span></h1>
+        <hr class="rule" />
+        <p class="login-sub">输入访问密码以继续</p>
+        <input id="login-password" type="password" placeholder="密码" autocomplete="current-password" />
+        <button type="submit" class="btn-primary">进入 →</button>
+        <p id="login-error" class="login-error"></p>
+      </form>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="app-view" hidden>
+      <div class="container">
+        <header class="app-header">
+          <h1 class="brand-name">Drop<span class="dot">.</span></h1>
+          <div class="header-right">
+            <span id="stat-line" class="stat-line"></span>
+            <details class="theme-menu" id="theme-menu">
+              <summary class="theme-summary">主题</summary>
+              <div class="theme-panel">
+                <p class="menu-label">主题 THEME</p>
+                <label><input type="radio" name="theme" value="paper" />纸面<span class="opt-latin">PAPER</span></label>
+                <label><input type="radio" name="theme" value="midnight" />午夜<span class="opt-latin">MIDNIGHT</span></label>
+                <label><input type="radio" name="theme" value="brutalist" />新粗野<span class="opt-latin">BRUTALIST</span></label>
+                <label><input type="radio" name="theme" value="aurora" />极光<span class="opt-latin">AURORA</span></label>
+                <label><input type="radio" name="theme" value="swiss" />瑞士<span class="opt-latin">SWISS</span></label>
+                <p class="menu-label">外观 MODE</p>
+                <label><input type="radio" name="mode" value="auto" />跟随系统<span class="opt-latin">AUTO</span></label>
+                <label><input type="radio" name="mode" value="light" />浅色<span class="opt-latin">LIGHT</span></label>
+                <label><input type="radio" name="mode" value="dark" />深色<span class="opt-latin">DARK</span></label>
+              </div>
+            </details>
+            <button id="btn-logout" class="btn-ghost">退出</button>
+          </div>
+        </header>
+        <hr class="rule" />
+
+        <section class="composer">
+          <textarea
+            id="note-input"
+            rows="2"
+            placeholder="在这里记下新的 Token 或想法…（Ctrl/⌘ + Enter 发送）"
+          ></textarea>
+          <!-- 有效期：对接下来写的笔记、拖入/粘贴的文件都生效 -->
+          <select id="ttl-select" class="ttl-select" title="有效期：到期后自动删除" aria-label="有效期">
+            <option value="0">永久</option>
+            <option value="600">10 分钟</option>
+            <option value="3600">1 小时</option>
+            <option value="86400">1 天</option>
+            <option value="604800">7 天</option>
+          </select>
+          <button id="btn-send" class="btn-primary">保存</button>
+        </section>
+
+        <main id="items" class="items"></main>
+        <div id="empty" class="empty" hidden>
+          <div class="empty-icon">❦</div>
+          <p>这里还是空的</p>
+          <p class="empty-sub">拖拽文件、粘贴截图，或写一条笔记试试</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 临时分享对话框 -->
+    <dialog id="share-dialog" class="share-dialog">
+      <div class="share-pick">
+        <p class="menu-label">临时分享 SHARE</p>
+        <p class="share-hint">拿到链接的任何人都能访问，到期自动失效。</p>
+        <div class="share-options">
+          <button type="button" class="share-opt" data-ttl="600">10 分钟</button>
+          <button type="button" class="share-opt" data-ttl="3600">1 小时</button>
+          <button type="button" class="share-opt" data-ttl="86400">1 天</button>
+          <button type="button" class="share-opt" data-ttl="604800">7 天</button>
+        </div>
+        <div class="share-actions">
+          <span></span>
+          <button type="button" class="btn-ghost" data-close>取消</button>
+        </div>
+      </div>
+      <div class="share-result" hidden>
+        <p class="menu-label">链接已生成 LINK</p>
+        <input id="share-link" readonly />
+        <p id="share-expire" class="share-hint"></p>
+        <div class="share-actions">
+          <button type="button" id="btn-copy-link" class="btn-primary">复制链接</button>
+          <button type="button" class="btn-ghost" data-close>完成</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- 拖拽提示遮罩 -->
+    <div id="drop-overlay" hidden>
+      <div class="drop-hint">松开鼠标，放进 Drop</div>
+    </div>
+
+    <div id="toast" role="status"></div>
+    <script src="/fmt.js"></script>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
