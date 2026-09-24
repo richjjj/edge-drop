@@ -568,14 +568,18 @@ button {
   color: var(--muted);
 }
 
-/* 发送按钮：平时隐去，聚焦浮现（所有主题一致） */
+/* 发送按钮：平时隐去，聚焦或有草稿时浮现（所有主题一致）。
+   有草稿时必须保持可点：Safari / iOS 上点按 <button> 不会把焦点转移到按钮，
+   mousedown 会先让 textarea 失焦、输入区失去 :focus-within；若按钮此时被
+   pointer-events: none 藏起来，随后的 click 就命中不到按钮，笔记存不上 */
 #btn-send {
   opacity: 0;
   pointer-events: none;
   transform: translateY(2px);
 }
 
-.composer:focus-within #btn-send {
+.composer:focus-within #btn-send,
+#note-input:not(:placeholder-shown) ~ #btn-send {
   opacity: 1;
   pointer-events: auto;
   transform: none;
